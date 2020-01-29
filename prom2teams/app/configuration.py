@@ -47,7 +47,10 @@ def _update_application_configuration(application, configuration):
             _port = configuration['HTTP Server']['Port']
             application.config['PORT'] = _port
     if 'Labels' in configuration:
-        application.config['LABELS_EXCLUDED'] = tuple(configuration['Labels']['Excluded'].replace(' ', '').split(','))
+        if 'Excluded' in configuration['Labels']:
+            application.config['LABELS_EXCLUDED'] = tuple(configuration['Labels']['Excluded'].replace(' ', '').split(','))
+        if 'Connector' in configuration['Labels']:
+            application.config['LABEL_CONNECTOR'] = configuration['Labels']['Connector']
     if 'Annotations' in configuration:
         application.config['ANNOTATIONS_EXCLUDED'] = tuple(configuration['Annotations']['Excluded'].replace(' ', '').split(','))
 

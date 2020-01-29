@@ -26,3 +26,24 @@ class AlertReceiver(Resource):
         alerts = self.schema.load(request.get_json())
         self.sender.send_alarms(alerts, app.config['MICROSOFT_TEAMS'][connector])
         return 'OK', 201
+
+
+@ns.route('/_by-label')
+@api_v2.doc(params={},
+            responses={201: 'OK'})
+class AlertLabelReceiver(Resource):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.schema = MessageSchema(exclude_fields=app.config['LABELS_EXCLUDED'],
+                                    exclude_annotations=app.config['ANNOTATIONS_EXCLUDED'])
+        if app.config['TEMPLATE_PATH']:
+            self.sender = AlarmSender(app.config['TEMPLATE_PATH'], app.config['GROUP_ALERTS_BY'])
+        else:
+            self.sender = AlarmSender(group_alerts_by=app.config['GROUP_ALERTS_BY'])
+
+    @api_v2.expect(message)
+    def post(self):
+        alerts = self.schema.load(request.get_json())
+        self.sender.send_alerts_by_label(alerts)
+        return 'OK', 201

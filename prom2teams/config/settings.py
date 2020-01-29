@@ -27,6 +27,7 @@ TEMPLATE_PATH = None
 
 # Labels
 LABELS_EXCLUDED = ()
+LABEL_CONNECTOR = 'msteams_connector'
 
 # Annotations
 ANNOTATIONS_EXCLUDED = ()
